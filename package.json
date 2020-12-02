@@ -1,7 +1,7 @@
 {
   "name": "first-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "A repository for Software Design (CIS 3296) project created by Jake Musser and William Morris.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,9 +9,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "save": "^2.4.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tug42490/cis3296-project.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/tug42490/cis3296-project/issues"
+  },
+  "homepage": "https://github.com/tug42490/cis3296-project#readme"
 }
