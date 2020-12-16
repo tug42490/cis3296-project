@@ -20,13 +20,7 @@ client.once('ready', () => {
 });
 
 client.on('message', message => {
-	for (var i = 0; i < blockedWords.length; i++) {
-		if (message.content.includes(blockedWords[i])) {
-			message.delete();
-			message.channel.send('Sorry, that message included a banned word.');
-		}
-	}
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const commandName = args.shift().toLowerCase();
@@ -41,6 +35,19 @@ client.on('message', message => {
 			blockedWords.push(args[0]);
 			message.channel.send('The word ' + args[0] + ' has been added to the filter list.');
 		}
+		return;
+	}
+	if (commandName === 'unbanword') {
+		if (!args.length) {
+			let reply = 'You didn\'t provide any arguments, ${message.author}!';
+			reply += '\nThe proper usage would be: \'${prefix}${command.name} wordToUnban\'';
+			message.channel.send(reply);
+		}
+		else if (blockedWords.includes(args[0])) {
+			blockedWords = blockedWords.filter(item => item !== args[0]);
+			message.channel.send('The word ' + args[0] + ' has been removed from the filter list.');
+		}
+		return;
 	}
 	if (commandName === 'seebannedwords') {
 		let reply = 'Banned Words: ';
@@ -48,10 +55,25 @@ client.on('message', message => {
 			reply += '\n' + blockedWords[i];
 		}
 		message.channel.send(reply);
+		return;
 	}
 
 	const command = client.commands.get(commandName) || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 	
+	for (var i = 0; i < blockedWords.length; i++) {
+		if (blockedWords.filter((word) => {
+			const regex = new RegExp(`\\b${word}\\b`, 'i');
+			// \b is an escape sequence (backspace) within a string. In order to actually
+			// include \b in the string, the \ needs to be escaped with another \ .
+		  
+			return regex.test(message.content.toLowerCase);
+		  })) {
+			message.delete();
+			message.channel.send('Sorry, that message included a banned word.');
+		}
+	}
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
+
 	if (!command) return;
 	
 	if (command.guildOnly && message.channel.type === 'dm') {
